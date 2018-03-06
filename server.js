@@ -1,12 +1,10 @@
-
+// Made by The Fake Ashray ;)
 var express = require('express');
 var app = express();
 
 app.get('/', function(req, res){
     res.sendfile('index.html', { root: __dirname + "/public/index.html" } );
 });
-
-//RGAPI-84dd187f-3153-4218-8166-571f838f79ed
 
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
