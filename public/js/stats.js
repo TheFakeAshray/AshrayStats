@@ -40,8 +40,8 @@ function GetRank() {
             // console.log(Object.keys(response)[0])
             // console.log(response.response.games[0].name);
             // console.log((response.response.games[0].playtime_forever)/60);
-            document.getElementById("tier").innerHTML = response[0].tier;
-            document.getElementById("rank").innerHTML = response[0].rank;
+            document.getElementById("tier").innerHTML = response[1].tier;
+            document.getElementById("rank").innerHTML = response[1].rank;
         }
     };
     xhttp.open("GET", "http://ashraystats.azurewebsites.net/lol/rank", true);
