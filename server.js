@@ -28,7 +28,6 @@ app.get('/steam/latestgames', function(httpRequest, httpResponse) {
 app.get('/lol/rank', function(httpRequest, httpResponse) {
     var url = "https://oc1.api.riotgames.com/lol/league/v3/positions/by-summoner/1821707?api_key="+process.env.LolKey;
     request.get(url, function(error, lolHttpRequest, lolHttpBody){
-        // httpResponse.setHeader('X-Riot-Token', 'RGAPI-84dd187f-3153-4218-8166-571f838f79ed');
         // httpResponse.setHeader('Content-Type', 'application/json');
         httpResponse.send(lolHttpBody);
     });
