@@ -36,11 +36,12 @@ function GetRank() {
         if (this.readyState == 4 && this.status == 200) {
             // Typical action to be performed when the document is ready:
             //Bronze, Silver, Gold, Diamond, Platinum, Master, Challenger
-            var lolranks = ["Bronze", "Silver", "Gold", "Diamond", "Platinum", "Master", "Challenger"];
+            var loltiers = ["BRONZE", "SILVER", "GOLD", "DIAMOND", "PLATINUM", "MASTER", "CHALLENGER"];
+            var lolranks = ["V", "IV", "III", "II", "I"];
             var response = JSON.parse(xhttp.responseText);
 
-            var tierone = lolranks.indexOf(response[0].tier);
-            var tiertwo = lolranks.indexOf(response[1].tier);
+            var tierone = loltiers.indexOf(response[0].tier);
+            var tiertwo = loltiers.indexOf(response[1].tier);
             if (tierone > tiertwo){
                 document.getElementById("tier").innerHTML = response[0].tier;
                 document.getElementById("rank").innerHTML = response[0].rank;
