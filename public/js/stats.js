@@ -14,7 +14,7 @@ function UserAction() {
             document.getElementById("game_time").innerHTML = (response.response.games[0].playtime_forever)/60;
         }
     };
-    xhttp.open("GET", "http://ashraystats.azurewebsites.net/steam/latestgames", true);
+    xhttp.open("GET", "../steam/latestgames", true);
     xhttp.send();
 }
 
@@ -70,7 +70,7 @@ function GetRank() {
             
         }
     };
-    xhttp.open("GET", "http://ashraystats.azurewebsites.net/lol/rank", true);
+    xhttp.open("GET", "../lol/rank", true);
     xhttp.send();
 }
 
