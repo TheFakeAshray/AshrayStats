@@ -58,7 +58,7 @@ app.get('/cinebuzz/getPastBookings', function(httpRequest, httpResponse) {
     console.log("hey");
     // apiCall(httpResponse, url,header)
     var loginOptions = {
-        url: "https://www.eventcinemas.co.nz/cinebuzz/login?Username=dabalnce&"+process.env.cineBuzz,
+        url: "https://www.eventcinemas.co.nz/cinebuzz/login?Username=dabalnce&Password="+process.env.cineBuzz,
         method: 'POST',
     }
     apiCall(loginOptions, function(loginResponse, loginBody){
