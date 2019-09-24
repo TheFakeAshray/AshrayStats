@@ -50,7 +50,7 @@ app.get("/steam/latestgames", function(httpRequest, httpResponse) {
 app.get("/lol/rank", function(httpRequest, httpResponse) {
     console.log(process.env.LolKey);
     var options = {
-        url: "https://oc1.api.riotgames.com/lol/league/v3/positions/by-summoner/1821707?api_key=" + process.env.LolKey,
+        url: "https://oc1.api.riotgames.com/lol/league/v4/entries/by-summoner/HALmw2koFqag9gOJqxkuGRqNaKMg_HA4bqgM2tAze3Vgbw?api_key=" + process.env.LolKey,
         method: "GET"
     };
     apiCall(options, function(response, body) {
