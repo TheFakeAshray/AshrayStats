@@ -2,6 +2,7 @@
 const express = require('express');
 const app = express();
 const HTMLParser = require('fast-html-parser');
+const request = require('request');
 require('dotenv').config();
 
 app.get('/', (req, res) => res.sendfile('index.html', { root: __dirname + '/public' }));
@@ -12,17 +13,13 @@ app.use((req, res, next) => {
 	res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
 	next();
 });
-const request = require('request');
 
 apiCall = (options, callback) => {
 	request(options, (error, httpResponse, httpBody) => {
-		if (httpResponse.statusCode == '200') {
-			console.log('apiCall Success');
-			return callback(httpResponse, httpBody);
-		} else {
-			console.log('error:', httpResponse.statusCode);
-			return callback(httpResponse, httpBody);
-		}
+		httpResponse.statusCode == '200'
+			? console.log('apiCall Success')
+			: console.log('error:', httpResponse.statusCode);
+		return callback(httpResponse, httpBody);
 	});
 };
 
