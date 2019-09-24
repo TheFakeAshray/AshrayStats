@@ -50,7 +50,7 @@ app.get('/lol/rank', (httpRequest, httpResponse) => {
 app.get('/cinebuzz/getPastBookings', (httpRequest, httpResponse) => {
 	// apiCall(httpResponse, url,header)
 	const loginOptions = {
-		url: `https://www.eventcinemas.co.nz/cinebuzz/login?Username=dabalnce&Password= ${process.env.cineBuzz}`,
+		url: `https://www.eventcinemas.co.nz/cinebuzz/login?Username=dabalnce&Password=${process.env.cineBuzz}`,
 		method: 'POST'
 	};
 	apiCall(loginOptions, (loginResponse, loginBody) => {
