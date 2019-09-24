@@ -1,96 +1,81 @@
 // Made by Ashray Shetty - AKA TheFakeAshray ;)
-var express = require("express");
-var app = express();
-var HTMLParser = require("fast-html-parser");
-require("dotenv").config();
+const express = require('express');
+const app = express();
+const HTMLParser = require('fast-html-parser');
+require('dotenv').config();
 
-app.get("/", function(req, res) {
-	res.sendfile("index.html", { root: __dirname + "/public" });
-});
+app.get('/', (req, res) => res.sendfile('index.html', { root: __dirname + '/public' }));
+
 //Need this for Steam/LoL Api's
-app.use(function(req, res, next) {
-	res.header("Access-Control-Allow-Origin", "*");
-	res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+app.use((req, res, next) => {
+	res.header('Access-Control-Allow-Origin', '*');
+	res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
 	next();
 });
-var request = require("request");
+const request = require('request');
 
-//Create options and pass that in. Example below
-// var options = {
-//     url: "thefakeashray.com/api/getDetails",
-//     method: 'GET',
-//     headers: {'Content-Type' : 'application/json'}
-// }
-function apiCall(options, callback) {
-	request(options, function(error, httpResponse, httpBody) {
-		if (httpResponse.statusCode == "200") {
-			console.log("apiCall Success");
+apiCall = (options, callback) => {
+	request(options, (error, httpResponse, httpBody) => {
+		if (httpResponse.statusCode == '200') {
+			console.log('apiCall Success');
 			return callback(httpResponse, httpBody);
 		} else {
-			console.log("error:", httpResponse.statusCode);
+			console.log('error:', httpResponse.statusCode);
 			return callback(httpResponse, httpBody);
 		}
 	});
-}
+};
 
-app.get("/steam/latestgames", function(httpRequest, httpResponse) {
+app.get('/steam/latestgames', (httpRequest, httpResponse) => {
 	// Create the Steam API URL. we want to use process.env.SteamKey
-	var options = {
-		url:
-			"http://api.steampowered.com/IPlayerService/GetRecentlyPlayedGames/v0001/?key=" +
-			process.env.SteamKey +
-			"&steamid=76561198078986044&format=json",
-		method: "GET"
+	const options = {
+		url: `http://api.steampowered.com/IPlayerService/GetRecentlyPlayedGames/v0001/?key=${process.env.SteamKey}&steamid=76561198078986044&format=json`,
+		method: 'GET'
 	};
-	apiCall(options, function(response, body) {
-		httpResponse.send(body);
-	});
+	apiCall(options, (response, body) => httpResponse.send(body));
 });
 
-app.get("/lol/rank", function(httpRequest, httpResponse) {
-	var summonerOptions = {
-		url: "https://oc1.api.riotgames.com/lol/summoner/v4/summoners/by-name/balnce?api_key=" + process.env.LolKey,
-		method: "GET"
+app.get('/lol/rank', (httpRequest, httpResponse) => {
+	const summonerOptions = {
+		url: 'https://oc1.api.riotgames.com/lol/summoner/v4/summoners/by-name/balnce?api_key=' + process.env.LolKey,
+		method: 'GET'
 	};
-	apiCall(summonerOptions, function(response, body) {
+	apiCall(summonerOptions, (response, body) => {
 		const { id } = JSON.parse(body);
-		var options = {
+		const options = {
 			url: `https://oc1.api.riotgames.com/lol/league/v4/entries/by-summoner/${id}?api_key=${process.env.LolKey}`,
-			method: "GET"
+			method: 'GET'
 		};
-		apiCall(options, function(response, body) {
-			httpResponse.send(body);
-		});
+		apiCall(options, (response, body) => httpResponse.send(body));
 	});
 });
 
-app.get("/cinebuzz/getPastBookings", function(httpRequest, httpResponse) {
-	console.log("hey");
+app.get('/cinebuzz/getPastBookings', function(httpRequest, httpResponse) {
 	// apiCall(httpResponse, url,header)
-	var loginOptions = {
-		url: "https://www.eventcinemas.co.nz/cinebuzz/login?Username=dabalnce&Password=" + process.env.cineBuzz,
-		method: "POST"
+	const loginOptions = {
+		url: 'https://www.eventcinemas.co.nz/cinebuzz/login?Username=dabalnce&Password=' + process.env.cineBuzz,
+		method: 'POST'
 	};
-	apiCall(loginOptions, function(loginResponse, loginBody) {
-		var cookie = loginResponse.headers["set-cookie"];
-		var bookingsOptions = {
-			url: "https://www.eventcinemas.co.nz/cinebuzz/getpastbookings",
-			method: "POST",
+	apiCall(loginOptions, (loginResponse, loginBody) => {
+		const cookie = loginResponse.headers['set-cookie'];
+		const bookingsOptions = {
+			url: 'https://www.eventcinemas.co.nz/cinebuzz/getpastbookings',
+			method: 'POST',
 			headers: { Cookie: cookie }
 		};
-		apiCall(bookingsOptions, function(bookingsResponse, bookingsBody) {
+		apiCall(bookingsOptions, (bookingsResponse, bookingsBody) => {
 			//Lets parse this ugly HTML into some Mighty Fine JSON
-			var htmlResult = HTMLParser.parse(bookingsBody);
-			html = htmlResult.querySelectorAll('.\\"booking\\"');
-			var jsonBookings = [];
-			var previousJsonEntry;
-			for (var x in html) {
-				var booking = html[x]
+			const htmlResult = HTMLParser.parse(bookingsBody);
+			const html = htmlResult.querySelectorAll('.\\"booking\\"');
+			let jsonBookings = [];
+			let previousJsonEntry;
+			for (let x in html) {
+				const booking = html[x]
 					.removeWhitespace()
-					.text.replace(/(?:\\[rn])+/g, ",")
+					.text.replace(/(?:\\[rn])+/g, ',')
 					.slice(1, -1);
-				var entry = booking.split(",");
-				var jsonEntry = {
+				const entry = booking.split(',');
+				const jsonEntry = {
 					Title: entry[0],
 					Date: entry[1],
 					Time: entry[2].slice(1, 9),
@@ -102,21 +87,20 @@ app.get("/cinebuzz/getPastBookings", function(httpRequest, httpResponse) {
 				if (
 					jsonEntry.Title != previousJsonEntry &&
 					//If it was at WestCity, it was someone using my card (glitch in their system)
-					!jsonEntry.Location.includes("Westcity") &&
+					!jsonEntry.Location.includes('Westcity') &&
 					//If location is empty (date is headoffice), it was because I was granted points, because of someone using my card.
-					!(jsonEntry.Location == "")
+					!(jsonEntry.Location == '')
 				) {
 					previousJsonEntry = jsonEntry.Title;
 					jsonBookings.push(jsonEntry);
 				}
 			}
-			// console.log(jsonBookings);
 			httpResponse.send(jsonBookings);
 		});
 	});
 });
 
-app.use("/", express.static("public"));
+app.use('/', express.static('public'));
 
-var port = process.env.port || 3002;
+const port = process.env.port || 3002;
 app.listen(port);
