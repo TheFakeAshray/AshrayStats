@@ -18,7 +18,7 @@ apiCall = (options, callback) => {
 	request(options, (error, httpResponse, httpBody) => {
 		httpResponse.statusCode == '200'
 			? console.log('apiCall Success')
-			: console.log('error:', httpResponse.statusCode);
+			: console.log(`error: ${httpResponse.statusCode}`);
 		return callback(httpResponse, httpBody);
 	});
 };
@@ -34,7 +34,7 @@ app.get('/steam/latestgames', (httpRequest, httpResponse) => {
 
 app.get('/lol/rank', (httpRequest, httpResponse) => {
 	const summonerOptions = {
-		url: 'https://oc1.api.riotgames.com/lol/summoner/v4/summoners/by-name/balnce?api_key=' + process.env.LolKey,
+		url: `https://oc1.api.riotgames.com/lol/summoner/v4/summoners/by-name/balnce?api_key=${process.env.LolKey}`,
 		method: 'GET'
 	};
 	apiCall(summonerOptions, (response, body) => {
@@ -50,7 +50,7 @@ app.get('/lol/rank', (httpRequest, httpResponse) => {
 app.get('/cinebuzz/getPastBookings', (httpRequest, httpResponse) => {
 	// apiCall(httpResponse, url,header)
 	const loginOptions = {
-		url: 'https://www.eventcinemas.co.nz/cinebuzz/login?Username=dabalnce&Password=' + process.env.cineBuzz,
+		url: `https://www.eventcinemas.co.nz/cinebuzz/login?Username=dabalnce&Password= ${process.env.cineBuzz}`,
 		method: 'POST'
 	};
 	apiCall(loginOptions, (loginResponse, loginBody) => {
