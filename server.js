@@ -3,7 +3,10 @@ const express = require('express');
 const app = express();
 const HTMLParser = require('fast-html-parser');
 const request = require('request');
+const cron = require('node-cron');
 require('dotenv').config();
+
+cron.schedule('* * * * *', () => console.log('cron run every minute'));
 
 app.get('/', (req, res) => res.sendfile('index.html', { root: __dirname + '/public' }));
 
