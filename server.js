@@ -51,53 +51,20 @@ app.get('/lol/rank', (httpRequest, httpResponse) => {
 });
 
 app.get('/cinebuzz/getPastBookings', (httpRequest, httpResponse) => {
-	// apiCall(httpResponse, url,header)
-	const loginOptions = {
-		url: `https://www.eventcinemas.co.nz/cinebuzz/login?Username=dabalnce&Password=${process.env.cineBuzz}`,
-		method: 'POST'
-	};
-	apiCall(loginOptions, (loginResponse, loginBody) => {
-		const cookie = loginResponse.headers['set-cookie'];
-		const bookingsOptions = {
-			url: 'https://www.eventcinemas.co.nz/cinebuzz/getpastbookings',
-			method: 'POST',
-			headers: { Cookie: cookie }
-		};
-		apiCall(bookingsOptions, (bookingsResponse, bookingsBody) => {
-			//Lets parse this ugly HTML into some Mighty Fine JSON
-			const htmlResult = HTMLParser.parse(bookingsBody);
-			const html = htmlResult.querySelectorAll('.\\"booking\\"');
-			let jsonBookings = [];
-			let previousJsonEntry;
-			for (let x in html) {
-				const booking = html[x]
-					.removeWhitespace()
-					.text.replace(/(?:\\[rn])+/g, ',')
-					.slice(1, -1);
-				const entry = booking.split(',');
-				const jsonEntry = {
-					Title: entry[0],
-					Date: entry[1],
-					Time: entry[2].slice(1, 9),
-					Location: entry[2].slice(13),
-					Points: entry[3]
-				};
-				// Eliminating unwanted results
-				// Firstly, duplicates (Where I booked tickets for multiple people)
-				if (
-					jsonEntry.Title != previousJsonEntry &&
-					//If it was at WestCity, it was someone using my card (glitch in their system)
-					!jsonEntry.Location.includes('Westcity') &&
-					//If location is empty (date is headoffice), it was because I was granted points, because of someone using my card.
-					!(jsonEntry.Location == '')
-				) {
-					previousJsonEntry = jsonEntry.Title;
-					jsonBookings.push(jsonEntry);
-				}
-			}
-			httpResponse.send(jsonBookings);
-		});
-	});
+	const MongoClient = require("mongodb").MongoClient;
+  const uri = `mongodb+srv://${process.env.mongoUser}:${process.env.mongoPass}@ashrayscluster-kzzor.azure.mongodb.net`;
+  const client = new MongoClient(uri, { useNewUrlParser: true });
+  client.connect(err => {
+    if (err) console.log(err);
+    else {
+      client
+        .db("Stats")
+        .collection("watchedMovies")
+        .find({ watched: true })
+        .toArray()
+        .then(result => httpResponse.send(result));
+    }
+  });
 });
 
 app.use('/', express.static('public'));
